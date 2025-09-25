@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Application System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .admin-login-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            padding: 2rem 1rem;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #5a6fd8;
+        }
+
+        .nav-item i {
+            margin-right: 0.5rem;
+        }
+
+        .content-area {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+            font-size: 1.3rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .file-upload {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            background: #f8f9ff;
+            border-color: #5a6fd8;
+        }
+
+        .file-upload.dragover {
+            background: #e8f2ff;
+            border-color: #4dabf7;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 0.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            height: 20px;
+            border-radius: 8px;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #dc3545;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-color: #ffc107;
+        }
+
+        .application-status {
+            background: linear-gradient(135deg, #17a2b8 0%, #6610f2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #ffc107; color: #212529; }
+        .status-approved { background: #28a745; color: white; }
+        .status-rejected { background: #dc3545; color: white; }
+        .status-under-review { background: #17a2b8; color: white; }
+
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .document-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px dashed #dee2e6;
+            text-align: center;
+        }
+
+        .document-uploaded {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .nin-validation {
+            position: absolute;
+            right: 10px;
+            top: 35px;
+            font-size: 1.2rem;
+        }
+
+        .valid { color: #28a745; }
+        .invalid { color: #dc3545; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .summary-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        /* Admin Panel Styles */
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-nav {
+            display: flex;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .admin-nav-item {
+            padding: 0.5rem 1rem;
+            margin-right: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-nav-item.active {
+            background: #dc3545;
+            color: white;
+        }
+
+        .admin-section {
+            display: none;
+            padding: 2rem;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .applications-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .applications-table th,
+        .applications-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .applications-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .applications-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .application-details {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+                border-right: none;
+                border-top: 1px solid #e9ecef;
+            }
+            
+            .content-area {
+                order: 1;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .admin-nav {
+                flex-direction: column;
+            }
+            
+            .admin-nav-item {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Student Application Interface -->
+        <div id="studentInterface">
+            <div class="header">
+                <div>
+                    <h1>🎓 Student Application System</h1>
+                    <p>Apply for Academic Programs - Federal Republic of Nigeria</p>
+                </div>
+                <button class="admin-login-btn" onclick="showAdminLogin()">Admin Login</button>
+            </div>
+
+            <div class="main-content">
+                <div class="sidebar">
+                    <div class="nav-item active" onclick="showSection('personal')">
+                        📋 Personal Information
+                    </div>
+                    <div class="nav-item" onclick="showSection('academic')">
+                        🎓 Academic Background
+                    </div>
+                    <div class="nav-item" onclick="showSection('documents')">
+                        📄 Documents Upload
+                    </div>
+                    <div class="nav-item" onclick="showSection('program')">
+                        🏫 Program Selection
+                    </div>
+                    <div class="nav-item" onclick="showSection('review')">
+                        👀 Review & Submit
+                    </div>
+                    <div class="nav-item" onclick="showSection('status')">
+                        📊 Application Status
+                    </div>
+                </div>
+
+                <div class="content-area">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar">20%</div>
+                    </div>
+
+                    <div id="alertContainer"></div>
+
+                    <!-- Personal Information Section -->
+                    <div id="personal" class="section active">
+                        <div class="form-section">
+                            <h3>Personal Information</h3>
+                            <form id="personalForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="nin">National Identification Number (NIN) <span class="required">*</span></label>
+                                        <input type="text" id="nin" name="nin" required maxlength="11" placeholder="Enter 11-digit NIN">
+                                        <div class="nin-validation" id="ninValidation"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="firstName">First Name <span class="required">*</span></label>
+                                        <input type="text" id="firstName" name="firstName" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="middleName">Middle Name</label>
+                                        <input type="text" id="middleName" name="middleName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName">Last Name <span class="required">*</span></label>
+                                        <input type="text" id="lastName" name="lastName" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="email">Email Address <span class="required">*</span></label>
+                                        <input type="email" id="email" name="email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Phone Number <span class="required">*</span></label>
+                                        <input type="tel" id="phone" name="phone" required placeholder="+234 XXX XXX XXXX">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
+                                        <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="gender">Gender <span class="required">*</span></label>
+                                        <select id="gender" name="gender" required>
+                                            <option value="">Select Gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="stateOfOrigin">State of Origin <span class="required">*</span></label>
+                                        <select id="stateOfOrigin" name="stateOfOrigin" required>
+                                            <option value="">Select State</option>
+                                            <!-- State options would go here -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lga">Local Government Area <span class="required">*</span></label>
+                                        <input type="text" id="lga" name="lga" required placeholder="Enter LGA">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="address">Residential Address <span class="required">*</span></label>
+                                    <textarea id="address" name="address" required placeholder="Enter full address"></textarea>
+                                </div>
+
+                                <button type="button" class="btn" onclick="savePersonalInfo()">Save & Continue</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Other sections (academic, documents, program, review, status) would go here -->
+                    <!-- For brevity, I've included only the personal info section as an example -->
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Login Modal -->
+        <div id="adminLoginModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAdminLogin()">&times;</span>
+                <div class="login-form">
+                    <h2>Admin Login</h2>
+                    <div class="form-group">
+                        <label for="adminUsername">Username</label>
+                        <input type="text" id="adminUsername" placeholder="Enter admin username">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" placeholder="Enter admin password">
+                    </div>
+                    <button type="button" class="btn" onclick="adminLogin()" style="width: 100%;">Login</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="admin-panel">
+            <div class="admin-header">
+                <h1>Admin Dashboard</h1>
+                <p>Manage Student Applications</p>
+                <button class="btn btn-secondary" onclick="logoutAdmin()" style="margin-top: 1rem;">Logout</button>
+            </div>
+
+            <div class="admin-nav">
+                <div class="admin-nav-item active" onclick="showAdminSection('dashboard')">Dashboard</div>
+                <div class="admin-nav-item" onclick="showAdminSection('applications')">Applications</div>
+                <div class="admin-nav-item" onclick="showAdminSection('settings')">Settings</div>
+            </div>
+
+            <div class="admin-sections">
+                <!-- Dashboard Section -->
+                <div id="adminDashboard" class="admin-section active">
+                    <h2>Application Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3 id="totalApplications">0</h3>
+                            <p>Total Applications</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="pendingApplications">0</h3>
+                            <p>Pending Review</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="approvedApplications">0</h3>
+                            <p>Approved</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="rejectedApplications">0</h3>
+                            <p>Rejected</p>
+                        </div>
+                    </div>
+
+                    <h2>Recent Applications</h2>
+                    <div class="applications-table-container">
+                        <table class="applications-table">
+                            <thead>
+                                <tr>
+                                    <th>Application ID</th>
+                                    <th>Name</th>
+                                    <th>Date Submitted</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentApplicationsTable">
+                                <!-- Recent applications will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Applications Section -->
+                <div id="adminApplications" class="admin-section">
+                    <h2>All Applications</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="statusFilter">Filter by Status</label>
+                            <select id="statusFilter" onchange="filterApplications()">
+                                <option value="all">All Applications</option>
+                                <option value="pending">Pending</option>
+                                <option value="under-review">Under Review</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchApplications">Search</label>
+                            <input type="text" id="searchApplications" placeholder="Search by name or application ID" onkeyup="searchApplications()">
+                        </div>
+                    </div>
+
+                    <div class="applications-table-container">
+                        <table class="applications-table">
+                            <thead>
+                                <tr>
+                                    <th>Application ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Program</th>
+                                    <th>Date Submitted</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allApplicationsTable">
+                                <!-- All applications will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Application Details Modal -->
+                <div id="applicationDetailsModal" class="modal">
+                    <div class="modal-content" style="max-width: 800px;">
+                        <span class="close" onclick="closeApplicationDetails()">&times;</span>
+                        <div id="applicationDetailsContent">
+                            <!-- Application details will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="adminSettings" class="admin-section">
+                    <h2>Admin Settings</h2>
+                    <div class="form-section">
+                        <h3>Change Password</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword">
+                            </div>
+                        </div>
+                        <button type="button" class="btn" onclick="changePassword()">Change Password</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>System Settings</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="autoApprove" checked>
+                                Auto-approve applications that meet all criteria
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="emailNotifications" checked>
+                                Send email notifications for new applications
+                            </label>
+                        </div>
+                        <button type="button" class="btn" onclick="saveSystemSettings()">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application data storage
+        let applicationData = {
+            personal: {},
+            academic: {},
+            documents: {},
+            program: {},
+            status: 'pending',
+            applicationId: null,
+            submissionDate: null
+        };
+
+        // Sample applications for demonstration
+        let applications = [
+            {
+                id: 'APP-2024-001',
+                personal: {
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    email: 'john.doe@example.com',
+                    phone: '+234 801 234 5678',
+                    nin: '12345678901'
+                },
+                program: {
+                    institution: 'University of Lagos',
+                    faculty: 'Engineering',
+                    firstChoice: 'Computer Engineering'
+                },
+                submissionDate: '2024-01-15',
+                status: 'pending'
+            },
+            {
+                id: 'APP-2024-002',
+                personal: {
+                    firstName: 'Jane',
+                    lastName: 'Smith',
+                    email: 'jane.smith@example.com',
+                    phone: '+234 802 345 6789',
+                    nin: '23456789012'
+                },
+                program: {
+                    institution: 'University of Ibadan',
+                    faculty: 'Medicine',
+                    firstChoice: 'Medicine and Surgery'
+                },
+                submissionDate: '2024-01-10',
+                status: 'approved'
+            },
+            {
+                id: 'APP-2024-003',
+                personal: {
+                    firstName: 'Chinedu',
+                    lastName: 'Okoro',
+                    email: 'chinedu.okoro@example.com',
+                    phone: '+234 803 456 7890',
+                    nin: '34567890123'
+                },
+                program: {
+                    institution: 'University of Nigeria',
+                    faculty: 'Law',
+                    firstChoice: 'Law'
+                },
+                submissionDate: '2024-01-05',
+                status: 'rejected'
+            }
+        ];
+
+        // Admin credentials (in a real app, this would be stored securely on the server)
+        const adminCredentials = {
+            username: 'admin',
+            password: 'admin123'
+        };
+
+        // Check if user is logged in as admin
+        let isAdminLoggedIn = false;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up NIN validation
+            document.getElementById('nin').addEventListener('input', validateNIN);
+            
+            // Populate state options
+            populateStateOptions();
+            
+            // Set default date for date of birth (18 years ago)
+            const defaultDate = new Date();
+            defaultDate.setFullYear(defaultDate.getFullYear() - 18);
+            document.getElementById('dateOfBirth').valueAsDate = defaultDate;
+            
+            // Update progress bar
+            updateProgressBar('personal');
+            
+            // Check if admin is already logged in (from session storage)
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+                showAdminPanel();
+            }
+        });
+
+        // Navigation function for student application
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Activate corresponding nav item
+            const navItems = document.querySelectorAll('.nav-item');
+            for (let item of navItems) {
+                if (item.getAttribute('onclick').includes(sectionId)) {
+                    item.classList.add('active');
+                    break;
+                }
+            }
+            
+            // Update progress bar
+            updateProgressBar(sectionId);
+        }
+
+        function updateProgressBar(currentSection) {
+            const sections = ['personal', 'academic', 'documents', 'program', 'review', 'status'];
+            const currentIndex = sections.indexOf(currentSection);
+            const progress = ((currentIndex + 1) / sections.length) * 100;
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${Math.round(progress)}%`;
+        }
+
+        // NIN Validation
+        function validateNIN() {
+            const nin = document.getElementById('nin').value;
+            const validation = document.getElementById('ninValidation');
+            
+            if (nin.length === 11 && /^\d+$/.test(nin)) {
+                validation.innerHTML = '✓';
+                validation.className = 'nin-validation valid';
+                return true;
+            } else if (nin.length > 0) {
+                validation.innerHTML = '✗';
+                validation.className = 'nin-validation invalid';
+                return false;
+            } else {
+                validation.innerHTML = '';
+                return false;
+            }
+        }
+
+        // Populate state options
+        function populateStateOptions() {
+            const states = [
+                'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 
+                'Benue', 'Borno', 'Cross River', 'Delta', 'Ebonyi', 'Edo', 
+                'Ekiti', 'Enugu', 'FCT', 'Gombe', 'Imo', 'Jigawa', 
+                'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara', 
+                'Lagos', 'Nasarawa', 'Niger', 'Ogun', 'Ondo', 'Osun', 
+                'Oyo', 'Plateau', 'Rivers', 'Sokoto', 'Taraba', 'Yobe', 'Zamfara'
+            ];
+            
+            const stateSelect = document.getElementById('stateOfOrigin');
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state.toLowerCase().replace(/\s+/g, '-');
+                option.textContent = state;
+                stateSelect.appendChild(option);
+            });
+        }
+
+        // Save personal info (simplified for demo)
+        function savePersonalInfo() {
+            if (!validateNIN()) {
+                showAlert('Please enter a valid 11-digit NIN.', 'error');
+                return;
+            }
+            
+            // In a real application, you would save the data properly
+            showAlert('Personal information saved successfully!', 'success');
+            showSection('academic');
+        }
+
+        // Admin functions
+        function showAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'block';
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+        }
+
+        function adminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (username === adminCredentials.username && password === adminCredentials.password) {
+                isAdminLoggedIn = true;
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                closeAdminLogin();
+                showAdminPanel();
+                showAlert('Admin login successful!', 'success');
+            } else {
+                showAlert('Invalid admin credentials. Please try again.', 'error');
+            }
+        }
+
+        function showAdminPanel() {
+            document.getElementById('studentInterface').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            updateAdminDashboard();
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            sessionStorage.removeItem('adminLoggedIn');
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('studentInterface').style.display = 'block';
+            showAlert('Admin logout successful!', 'success');
+        }
+
+        function showAdminSection(sectionId) {
+            // Hide all admin sections
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all admin nav items
+            document.querySelectorAll('.admin-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById('admin' + sectionId.charAt(0).toUpperCase() + sectionId.slice(1)).classList.add('active');
+            
+            // Activate corresponding nav item
+            document.querySelector(`.admin-nav-item[onclick="showAdminSection('${sectionId}')"]`).classList.add('active');
+            
+            // Update content based on section
+            if (sectionId === 'applications') {
+                displayAllApplications();
+            }
+        }
+
+        function updateAdminDashboard() {
+            // Update statistics
+            const total = applications.length;
+            const pending = applications.filter(app => app.status === 'pending').length;
+            const approved = applications.filter(app => app.status === 'approved').length;
+            const rejected = applications.filter(app => app.status === 'rejected').length;
+            
+            document.getElementById('totalApplications').textContent = total;
+            document.getElementById('pendingApplications').textContent = pending;
+            document.getElementById('approvedApplications').textContent = approved;
+            document.getElementById('rejectedApplications').textContent = rejected;
+            
+            // Display recent applications
+            displayRecentApplications();
+        }
+
+        function displayRecentApplications() {
+            const tableBody = document.getElementById('recentApplicationsTable');
+            tableBody.innerHTML = '';
+            
+            // Sort applications by date (newest first) and take the first 5
+            const recentApps = [...applications]
+                .sort((a, b) => new Date(b.submissionDate) - new Date(a.submissionDate))
+                .slice(0, 5);
+            
+            recentApps.forEach(app => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${app.id}</td>
+                    <td>${app.personal.firstName} ${app.personal.lastName}</td>
+                    <td>${app.submissionDate}</td>
+                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="viewApplicationDetails('${app.id}')">View</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function displayAllApplications() {
+            const tableBody = document.getElementById('allApplicationsTable');
+            tableBody.innerHTML = '';
+            
+            applications.forEach(app => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${app.id}</td>
+                    <td>${app.personal.firstName} ${app.personal.lastName}</td>
+                    <td>${app.personal.email}</td>
+                    <td>${app.program.firstChoice}</td>
+                    <td>${app.submissionDate}</td>
+                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="viewApplicationDetails('${app.id}')">View</button>
+                        ${app.status === 'pending' ? `
+                            <button class="btn btn-success" onclick="approveApplication('${app.id}')">Approve</button>
+                            <button class="btn btn-danger" onclick="rejectApplication('${app.id}')">Reject</button>
+                        ` : ''}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function viewApplicationDetails(appId) {
+            const app = applications.find(a => a.id === appId);
+            if (!app) return;
+            
+            const modalContent = document.getElementById('applicationDetailsContent');
+            modalContent.innerHTML = `
+                <h2>Application Details - ${app.id}</h2>
+                <div class="application-details">
+                    <h3>Personal Information</h3>
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <p><strong>Name:</strong> ${app.personal.firstName} ${app.personal.lastName}</p>
+                            <p><strong>Email:</strong> ${app.personal.email}</p>
+                            <p><strong>Phone:</strong> ${app.personal.phone}</p>
+                        </div>
+                        <div class="summary-card">
+                            <p><strong>NIN:</strong> ${app.personal.nin}</p>
+                            <p><strong>Submission Date:</strong> ${app.submissionDate}</p>
+                            <p><strong>Status:</strong> <span class="status-badge status-${app.status}">${app.status}</span></p>
+                        </div>
+                    </div>
+                    
+                    <h3>Program Information</h3>
+                    <div class="summary-card">
+                        <p><strong>Institution:</strong> ${app.program.institution}</p>
+                        <p><strong>Faculty:</strong> ${app.program.faculty}</p>
+                        <p><strong>First Choice:</strong> ${app.program.firstChoice}</p>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        ${app.status === 'pending' ? `
+                            <button class="btn btn-success" onclick="approveApplication('${app.id}'); closeApplicationDetails();">Approve Application</button>
+                            <button class="btn btn-danger" onclick="rejectApplication('${app.id}'); closeApplicationDetails();">Reject Application</button>
+                        ` : ''}
+                        <button class="btn btn-secondary" onclick="closeApplicationDetails()">Close</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('applicationDetailsModal').style.display = 'block';
+        }
+
+        function closeApplicationDetails() {
+            document.getElementById('applicationDetailsModal').style.display = 'none';
+        }
+
+        function approveApplication(appId) {
+            const appIndex = applications.findIndex(a => a.id === appId);
+            if (appIndex !== -1) {
+                applications[appIndex].status = 'approved';
+                updateAdminDashboard();
+                displayAllApplications();
+                showAlert(`Application ${appId} has been approved!`, 'success');
+            }
+        }
+
+        function rejectApplication(appId) {
+            const appIndex = applications.findIndex(a => a.id === appId);
+            if (appIndex !== -1) {
+                applications[appIndex].status = 'rejected';
+                updateAdminDashboard();
+                displayAllApplications();
+                showAlert(`Application ${appId} has been rejected.`, 'error');
+            }
+        }
+
+        function filterApplications() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const tableBody = document.getElementById('allApplicationsTable');
+            tableBody.innerHTML = '';
+            
+            const filteredApps = statusFilter === 'all' 
+                ? applications 
+                : applications.filter(app => app.status === statusFilter);
+            
+            filteredApps.forEach(app => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${app.id}</td>
+                    <td>${app.personal.firstName} ${app.personal.lastName}</td>
+                    <td>${app.personal.email}</td>
+                    <td>${app.program.firstChoice}</td>
+                    <td>${app.submissionDate}</td>
+                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="viewApplicationDetails('${app.id}')">View</button>
+                        ${app.status === 'pending' ? `
+                            <button class="btn btn-success" onclick="approveApplication('${app.id}')">Approve</button>
+                            <button class="btn btn-danger" onclick="rejectApplication('${app.id}')">Reject</button>
+                        ` : ''}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function searchApplications() {
+            const searchTerm = document.getElementById('searchApplications').value.toLowerCase();
+            const tableBody = document.getElementById('allApplicationsTable');
+            tableBody.innerHTML = '';
+            
+            const filteredApps = applications.filter(app => 
+                app.personal.firstName.toLowerCase().includes(searchTerm) ||
+                app.personal.lastName.toLowerCase().includes(searchTerm) ||
+                app.id.toLowerCase().includes(searchTerm)
+            );
+            
+            filteredApps.forEach(app => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${app.id}</td>
+                    <td>${app.personal.firstName} ${app.personal.lastName}</td>
+                    <td>${app.personal.email}</td>
+                    <td>${app.program.firstChoice}</td>
+                    <td>${app.submissionDate}</td>
+                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="viewApplicationDetails('${app.id}')">View</button>
+                        ${app.status === 'pending' ? `
+                            <button class="btn btn-success" onclick="approveApplication('${app.id}')">Approve</button>
+                            <button class="btn btn-danger" onclick="rejectApplication('${app.id}')">Reject</button>
+                        ` : ''}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function changePassword() {
+            // In a real application, this would communicate with a server
+            showAlert('Password changed successfully!', 'success');
+        }
+
+        function saveSystemSettings() {
+            // In a real application, this would save settings to a server
+            showAlert('System settings saved successfully!', 'success');
+        }
+
+        // Alert function
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            alertContainer.appendChild(alert);
+            
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
